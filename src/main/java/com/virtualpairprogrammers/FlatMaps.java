@@ -29,9 +29,24 @@ public class FlatMaps {
 		// Passn the conf to JavaSparkContext to read it
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		// Pass the input to intialize RDD
-		JavaRDD<String> sentence = sc.parallelize(input);
-		JavaRDD<String> words = sentence.flatMap(value -> Arrays.asList(value.split(" ")).iterator());
-		words.foreach(value -> System.out.println(value)); 
+//		JavaRDD<String> sentence = sc.parallelize(input);
+//		
+//		// flat maps requires Arraylist because it needs to convert the Array in to list 
+//		JavaRDD<String> words = sentence.flatMap(value -> Arrays.asList(value.split(" ")).iterator());
+//		// Here we are specifying that if the length of the word is more that 1, only then add it to the new RDD created
+//		JavaRDD filteredwords= words.filter(word -> word.length() > 1);
+//		filteredwords.foreach(value -> System.out.println(value)); 
+		
+		
+//		Optimized
+
+		sc.parallelize(input)
+				.flatMap(value -> Arrays.asList(value.split(" ")).iterator())
+				.filter(word -> word.length() > 1)
+				.foreach(value -> System.out.println(value));
+				
+		sc.close();
+	
 	}
 
 }
