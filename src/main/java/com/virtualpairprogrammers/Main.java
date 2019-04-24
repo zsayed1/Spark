@@ -26,6 +26,8 @@ public class Main {
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		// Pass the input to intialize RDD 
 		JavaRDD<Double> myrdd = sc.parallelize(input);
+		Double Result = myrdd.reduce((value1,value2) -> value1+value2);
+		System.out.println(Result);
 		sc.close();
 	}
 
