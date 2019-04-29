@@ -29,10 +29,16 @@ public class SparkSql {
 	long numberofRows = dataset.count();
 //	System.out.println("The total number of rows are "+ dataset.count());
 
+//	
+//	Row firstRow = dataset.first();
+//	// To get the second value of the first row and pass the value of the column
+//	String subject = firstRow.get(2).toString();
+//	// Also can be done with getAs
+//	String subjectAs = firstRow.getAs("subject").toString();
+//	System.out.println(subject);
 	
-	Row firstRow = dataset.first();
-	String subject = firstRow.get(2).toString();
-	System.out.println(subject);
+	Dataset<Row> modernArtResult = dataset.filter("subject = 'Modern Art' AND year>=2007");
+	modernArtResult.show();	
 	
 	sparksession.close();
 	
