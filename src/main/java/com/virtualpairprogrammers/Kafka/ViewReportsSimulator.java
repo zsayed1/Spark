@@ -48,7 +48,7 @@ public class ViewReportsSimulator
 			}
 
 			String courseName = courseKeys.get(courseKey);
-			producer.send(new ProducerRecord<String, String>("viewrecords", courseName));
+			producer.send(new ProducerRecord<String, String>("test", courseName));
 		}
 		sc.close();
 		producer.close();

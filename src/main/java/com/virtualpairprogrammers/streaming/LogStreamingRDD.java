@@ -24,7 +24,8 @@ public class LogStreamingRDD {
 		JavaReceiverInputDStream<String> socketTextStream = sc.socketTextStream("localhost", 8989);
 		
 		JavaDStream<String> show = socketTextStream.map(value -> value);
-	    JavaPairDStream<String, Long> withFiltered = show.mapToPair(value-> new Tuple2<>(value.split(",")[0],1L));
+	   
+		JavaPairDStream<String, Long> withFiltered = show.mapToPair(value-> new Tuple2<>(value.split(",")[0],1L));
 		
 	    JavaPairDStream<String, Long> reduceByKeyStream = withFiltered.reduceByKeyAndWindow((value1,value2)->value1+value2, Durations.minutes(2));
 
