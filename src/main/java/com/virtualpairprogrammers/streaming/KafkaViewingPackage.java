@@ -46,13 +46,13 @@ public class KafkaViewingPackage {
 		JavaInputDStream<ConsumerRecord<String, String>> stream = KafkaUtils.createDirectStream(sc,  LocationStrategies.PreferConsistent(), ConsumerStrategies.Subscribe(topics, params));
 //		JavaDStream<String> reading = stream.map(value-> value.value());
 		JavaPairDStream<String, Long> mapToPair = stream.mapToPair(value-> new Tuple2<>(value.value(),5L));
-		JavaPairDStream<String, Long> reduceByKey = mapToPair.reduceByKeyAndWindow((value1,value2)-> value1+value2, Durations.minutes(2));
+		JavaPairDStream<String, Long> reduceByKey = mapToPair.reduceByKeyAndWindow((value1,value2)-> value1+value2, Durations.minutes(2),Durations.seconds(60));
 		// Swapp the rdd value by using swap funtion
 		JavaPairDStream<Long, String> swapped = reduceByKey.mapToPair(value-> value.swap());
 		// Using transform in javaPairDstream
 		JavaPairDStream<Long, String> transformToPair = swapped.transformToPair(rdd-> rdd.sortByKey(false));
 		
-		transformToPair.print();
+		transformToPair.print(50);
 		 
 		 sc.start();
 		 sc.awaitTermination();
