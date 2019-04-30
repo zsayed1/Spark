@@ -1,4 +1,4 @@
-package com.virtualpairprogrammers;
+package com.virtualpairprogrammers.streaming;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -26,7 +26,7 @@ public class LogStreamingRDD {
 		JavaDStream<String> show = socketTextStream.map(value -> value);
 	    JavaPairDStream<String, Long> withFiltered = show.mapToPair(value-> new Tuple2<>(value.split(",")[0],1L));
 		
-	    JavaPairDStream<String, Long> reduceByKeyStream = withFiltered.reduceByKey((value1,value2)->value1+value2);
+	    JavaPairDStream<String, Long> reduceByKeyStream = withFiltered.reduceByKeyAndWindow((value1,value2)->value1+value2, Durations.minutes(2));
 
 	    reduceByKeyStream.print();
 		sc.start();
