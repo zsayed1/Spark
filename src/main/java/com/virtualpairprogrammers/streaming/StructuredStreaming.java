@@ -26,6 +26,8 @@ public class StructuredStreaming {
 //								   .option("kafka.bootstrap.servers","localhost:9092")
 //								   .option("subscribe","test")
 //								   .load();
+		
+		spark.conf().set("spark.sql.shuffle.partitions","10");
 								   
 		
 		Dataset<Row> dataset = spark.readStream()
@@ -38,11 +40,13 @@ public class StructuredStreaming {
 
 		// Using the sql statments
 		dataset.createOrReplaceTempView("test_table");
-		Dataset<Row> results = spark.sql("select CAST(value AS STRING) AS course, sum(5) AS seconds from test_table GROUP BY course ORDER BY seconds DESC");
+		Dataset<Row> results = spark.sql("select window, CAST(value AS STRING) AS course, sum(5) AS seconds from test_table GROUP BY window(timestamp,'2 minutes'), course ORDER BY seconds DESC");
 		
 		StreamingQuery query = results.writeStream()
 			   .format("console")
-			   .outputMode(OutputMode.Complete())
+			   .outputMode(OutputMode.Complete())	
+			   .option("truncate", false)
+			   .option("numRows",50)
 			   .start();
 		query.awaitTermination();
 		
